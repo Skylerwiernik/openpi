@@ -1,5 +1,7 @@
+import base64
 import dataclasses
 
+import cv2
 import einops
 import numpy as np
 
@@ -18,6 +20,17 @@ def make_libero_example() -> dict:
 
 
 def _parse_image(image) -> np.ndarray:
+    # Handle base64 JPG string
+    if isinstance(image, str):
+        # Decode base64 string to bytes
+        image_bytes = base64.b64decode(image)
+        # Decode JPG to numpy array
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        # Convert BGR to RGB
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        return image
+
     image = np.asarray(image)
     if np.issubdtype(image.dtype, np.floating):
         image = (255 * image).astype(np.uint8)

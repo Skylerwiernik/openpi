@@ -47,6 +47,13 @@ def unpack_array(obj):
     if b"__npgeneric__" in obj:
         return np.dtype(obj[b"dtype"]).type(obj[b"data"])
 
+    if "__ndarray__" in obj:
+        return np.ndarray(buffer=obj["data"], dtype=np.dtype(obj["dtype"]), shape=obj["shape"])
+
+    if "__npgeneric__" in obj:
+        return np.dtype(obj["dtype"]).type(obj["data"])
+
+
     return obj
 
 
